@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Google Callback</title>
+</head>
+<body>
+<form action="http://127.0.0.1:8000/accounts/dj-rest-auth/google/" method="post" name="googlecode">
+    {% csrf_token %}
+    <input type="text" name="code" value="{{ code }}">
+</form>
+<script>
+    document.googlecode.submit()
+</script>
+</body>
+</html>
