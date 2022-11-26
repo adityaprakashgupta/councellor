@@ -177,3 +177,9 @@ DJOSER = {
         'user_delete': 'djoser.serializers.UserSerializer',
     }
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mailtrap.io'
+EMAIL_HOST_USER = 'cec748e4e7e836'
+EMAIL_HOST_PASSWORD = '76bc0e64c5b3f5'
+EMAIL_PORT = '2525'
