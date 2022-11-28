@@ -61,8 +61,8 @@ class UserCreateSerializer(UserSerializer):
         try:
             for group in groups:
                 if not Group.objects.filter(name=group).exists():
-                    raise django_exceptions.ValidationError("Group with name %(group_name) doesn't exists",
-                                                            code="group_does_not_exists", params={"group_name": group})
+                    raise django_exceptions.ValidationError(f"Group with name {group} doesn't exists",
+                                                            code="group_does_not_exists")
             attrs["groups"] = groups
         except django_exceptions.ValidationError as e:
             serializer_error = serializers.as_serializer_error(e)
