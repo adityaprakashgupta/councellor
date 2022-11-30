@@ -22,7 +22,7 @@ class Slot(BaseModel):
 
 
 class Service(BaseModel):
-    name = models.CharField(unique=True)
+    name = models.CharField(unique=True, max_length=225)
     price = models.PositiveIntegerField(blank=False)
     price_on_holidays = models.PositiveIntegerField(blank=True)
     category = models.CharField(max_length=225, choices=[
@@ -55,7 +55,7 @@ class Appointment(BaseModel):
     session_type = models.CharField(choices=[
         ("individual", "Individual"),
         ("group", "Group")
-    ], default="individual")
+    ], default="individual", max_length=10)
 
 
 class ServicePack(BaseModel):
@@ -70,3 +70,8 @@ class ServicePack(BaseModel):
 
     def get_total_session(self):
         return self.no_grp_session + self.no_ind_session
+
+
+class Leave(BaseModel):
+    date = models.DateField()
+    slots = models.ManyToManyField(Slot)
