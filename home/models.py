@@ -1,6 +1,5 @@
 from django.db import models
 from accounts.models import BaseModel, User
-from .validators import group_validators
 
 
 # Create your models here.
@@ -19,13 +18,17 @@ class Slot(BaseModel):
     name = models.CharField(max_length=5)
     start_time = models.TimeField()
     end_time = models.TimeField()
-    available_days = models.ManyToManyField("Day", on_delete=models.CASCADE)
+    available_days = models.ManyToManyField("Day")
 
 
 class Service(BaseModel):
     name = models.CharField(unique=True)
-    price = models.IntegerField(max_length=5, blank=False)
-    price_on_holidays = models.IntegerField(max_length=5, blank=True)
+    price = models.PositiveIntegerField(blank=False)
+    price_on_holidays = models.PositiveIntegerField(blank=True)
+    category = models.CharField(max_length=225, choices=[
+        ("regular", "Regular"),
+        ('pack', 'Pack')
+    ])
 
     def save(
             self, force_insert=False, force_update=False, using=None, update_fields=None
@@ -42,9 +45,28 @@ class Service(BaseModel):
         )
 
 
-class Appointments(BaseModel):
-    client = models.ForeignKey(User, on_delete=models.CASCADE)
-    counsellor = models.ForeignKey(User, on_delete=models.CASCADE)
+class Appointment(BaseModel):
+    name = models.CharField(max_length=225, blank=True)
+    client = models.ForeignKey(User, on_delete=models.CASCADE, related_name="appointments_client")
+    counsellor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="appointments_counsellor")
     date = models.DateField()
     slot = models.ForeignKey("Slot", on_delete=models.CASCADE)
     is_paid = models.BooleanField(default=False)
+    session_type = models.CharField(choices=[
+        ("individual", "Individual"),
+        ("group", "Group")
+    ], default="individual")
+
+
+class ServicePack(BaseModel):
+    client = models.ForeignKey(User, on_delete=models.CASCADE, related_name="service_pack_client")
+    counsellor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="service_pack_counsellor")
+    no_of_members = models.PositiveIntegerField(default=1)
+    no_grp_session = models.PositiveIntegerField(default=0)
+    no_ind_session = models.PositiveIntegerField(default=1)
+    appointments = models.ManyToManyField("Appointment")
+    service = models.ForeignKey("Service", on_delete=models.CASCADE)
+    is_paid = models.BooleanField(default=False)
+
+    def get_total_session(self):
+        return self.no_grp_session + self.no_ind_session
