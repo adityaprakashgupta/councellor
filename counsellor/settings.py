@@ -66,8 +66,7 @@ ROOT_URLCONF = 'counsellor.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -91,6 +90,16 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+if eval(env("USE_MYSQL")):
+    DATABASES["default"] = {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': env("MYSQL_DBNAME"),
+        'USER': env("MYSQL_USER"),
+        'PASSWORD': env("MYSQL_PASSWORD"),
+        'HOST': env("MYSQL_SERVER"),
+        'PORT': env("MYSQL_PORT")
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

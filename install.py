@@ -53,6 +53,4 @@ for slot in [
     if created:
         db_slot.available_days.add(*available_days)
         db_slot.save()
-        print(db_slot)
-    else:
-        print((db_slot, created))
+    print((db_slot, created))
