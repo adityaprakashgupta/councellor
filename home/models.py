@@ -57,6 +57,19 @@ class Appointment(BaseModel):
         ("group", "Group")
     ], default="individual", max_length=10)
 
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
+        free_slots, created = FreeSlot.objects.get_or_create(counsellor=self.counsellor, date=self.date)
+        if created:
+            Slot.objects.filter()
+
 
 class ServicePack(BaseModel):
     client = models.ForeignKey(User, on_delete=models.CASCADE, related_name="service_pack_client")
@@ -73,5 +86,12 @@ class ServicePack(BaseModel):
 
 
 class Leave(BaseModel):
+    date = models.DateField()
+    slots = models.ManyToManyField(Slot)
+    counsellor = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+class FreeSlot(BaseModel):
+    counsellor = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField()
     slots = models.ManyToManyField(Slot)

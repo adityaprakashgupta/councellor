@@ -1,8 +1,9 @@
-from django.contrib.auth.models import Group
 from django.core import exceptions
 
 
-def group_validators(value):
-    print(value, type(value))
-    # if not Group.objects.filter(name=value).exists():
-    raise exceptions.ValidationError("Group does not exists.", code="group_not_found")
+def group_validators(user, name):
+    if not user.groups.filter(mame=name).exists():
+        raise exceptions.ValidationError(f"User does not belongs to {name}", code="group_not_found")
+
+# def get_free_slot(date):
+# list(date).remove()
