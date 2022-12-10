@@ -23,6 +23,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     {"user": serializer_error[api_settings.NON_FIELD_ERRORS_KEY]}
                 )
+        
 
 
 

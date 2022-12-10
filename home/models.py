@@ -68,7 +68,9 @@ class Appointment(BaseModel):
         )
         free_slots, created = FreeSlot.objects.get_or_create(counsellor=self.counsellor, date=self.date)
         if created:
-            Slot.objects.filter()
+            free_slots.slots.set(Slot.objects.all())
+        free_slots.slots.remove(self.slot)
+        free_slots.save()
 
 
 class ServicePack(BaseModel):
