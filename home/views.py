@@ -56,3 +56,9 @@ def make_appointment(request):
 class AppointmentViewSet(viewsets.ModelViewSet):
     serializer_class = AppointmentSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        if self.request.user.groups.filter(name="Client").exists():
+            return Appointment.objects.filter(client=self.request.user)
+        else:
+            return Appointment.objects.filter(counsellor=self.request.user)

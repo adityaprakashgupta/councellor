@@ -3,6 +3,14 @@ from accounts.models import BaseModel, User
 
 
 # Create your models here.
+class CounsellorUser(BaseModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+
+class ClientUser(BaseModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+
 class Day(BaseModel):
     name = models.CharField(choices=[
         ("mon", "Monday"),
@@ -47,8 +55,10 @@ class Service(BaseModel):
 
 class Appointment(BaseModel):
     name = models.CharField(max_length=225, blank=True)
-    client = models.ForeignKey(User, on_delete=models.CASCADE, related_name="appointments_client")
-    counsellor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="appointments_counsellor")
+    client = models.ForeignKey(
+        ClientUser, on_delete=models.CASCADE, related_name="appointments_client")
+    counsellor = models.ForeignKey(
+        CounsellorUser, on_delete=models.CASCADE, related_name="appointments_counsellor")
     date = models.DateField()
     slot = models.ForeignKey("Slot", on_delete=models.CASCADE)
     is_paid = models.BooleanField(default=False)
@@ -66,7 +76,8 @@ class Appointment(BaseModel):
             using=using,
             update_fields=update_fields,
         )
-        free_slots, created = FreeSlot.objects.get_or_create(counsellor=self.counsellor, date=self.date)
+        free_slots, created = FreeSlot.objects.get_or_create(
+            counsellor=self.counsellor, date=self.date)
         if created:
             free_slots.slots.set(Slot.objects.all())
         free_slots.slots.remove(self.slot)
@@ -74,8 +85,10 @@ class Appointment(BaseModel):
 
 
 class ServicePack(BaseModel):
-    client = models.ForeignKey(User, on_delete=models.CASCADE, related_name="service_pack_client")
-    counsellor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="service_pack_counsellor")
+    client = models.ForeignKey(
+        ClientUser, on_delete=models.CASCADE, related_name="service_pack_client")
+    counsellor = models.ForeignKey(
+        CounsellorUser, on_delete=models.CASCADE, related_name="service_pack_counsellor")
     no_of_members = models.PositiveIntegerField(default=1)
     no_grp_session = models.PositiveIntegerField(default=0)
     no_ind_session = models.PositiveIntegerField(default=1)
@@ -90,10 +103,10 @@ class ServicePack(BaseModel):
 class Leave(BaseModel):
     date = models.DateField()
     slots = models.ManyToManyField(Slot)
-    counsellor = models.ForeignKey(User, on_delete=models.CASCADE)
+    counsellor = models.ForeignKey(CounsellorUser, on_delete=models.CASCADE)
 
 
 class FreeSlot(BaseModel):
-    counsellor = models.ForeignKey(User, on_delete=models.CASCADE)
+    counsellor = models.ForeignKey(CounsellorUser, on_delete=models.CASCADE)
     date = models.DateField()
     slots = models.ManyToManyField(Slot)

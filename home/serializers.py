@@ -10,7 +10,6 @@ class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
         fields = "__all__"
-        depth = 2
 
     def validate(self, attrs):
         counsellor = User.objects.get(pk=attrs.pop("counsellor"))
@@ -23,8 +22,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     {"user": serializer_error[api_settings.NON_FIELD_ERRORS_KEY]}
                 )
-        
 
-
-
-
+    def create(self, validated_data):
+        counsellor = validated_data.pop("counsellor")
+        return super().create(validated_data)
