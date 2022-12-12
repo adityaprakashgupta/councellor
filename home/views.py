@@ -1,5 +1,5 @@
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from accounts.models import User
@@ -46,6 +46,13 @@ def make_appointment(request):
         if error:
             return Response({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            app = Appointment.objects.create(name=name, client=client, counsellor=counsellor, slot=slot, date=date, session_type=session_type)
+            app = Appointment.objects.create(name=name, client=client, counsellor=counsellor, slot=slot, date=date,
+                                             session_type=session_type)
             serializer = AppointmentSerializer(app, many=False)
             return Response(serializer.data)
+    return None
+
+
+class AppointmentViewSet(viewsets.ModelViewSet):
+    serializer_class = AppointmentSerializer
+    permission_classes = [IsAuthenticated]
