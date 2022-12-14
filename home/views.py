@@ -58,7 +58,8 @@ class AppointmentViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        if hasattr(self.request.user, "ClientUser"):
-            return Appointment.objects.filter(client=self.request.user)
-        else:
-            return Appointment.objects.filter(counsellor=self.request.user)
+        if hasattr(self.request.user, "clientuser"):
+            return Appointment.objects.filter(client=self.request.user.clientuser)
+        elif hasattr(self.request.user, "counselloruser"):
+            return Appointment.objects.filter(counsellor=self.request.user.counselloruser)
+
