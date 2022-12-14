@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 import requests
 from rest_framework import serializers
 from rest_framework.settings import api_settings
+from home.models import CounsellorUser, ClientUser
 
 User = get_user_model()
 
@@ -77,6 +78,10 @@ class UserCreateSerializer(UserSerializer):
         with transaction.atomic():
             user = User.objects.create_user(**validated_data)
             for group in groups:
+                if group == "client":
+                    ClientUser.objects.create(user=user)
+                elif group == "counsellor":
+                    CounsellorUser.objects.create(user=user)
                 group_instance = Group.objects.filter(name=group)
                 user.groups.set(group_instance)
             user.save()
