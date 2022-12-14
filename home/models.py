@@ -67,6 +67,7 @@ class Appointment(BaseModel):
         ("individual", "Individual"),
         ("group", "Group")
     ], default="individual", max_length=10)
+    service = models.ForeignKey("Service", on_delete=models.CASCADE, null=True)
 
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
