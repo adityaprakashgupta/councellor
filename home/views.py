@@ -3,7 +3,7 @@ from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from accounts.models import User
-from .models import Slot, Appointment
+from .models import Slot, Appointment, CounsellorUser, ClientUser
 from .serializers import AppointmentSerializer
 
 
@@ -58,7 +58,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        if self.request.user.groups.filter(name="Client").exists():
+        if hasattr(self.request.user, "ClientUser"):
             return Appointment.objects.filter(client=self.request.user)
         else:
             return Appointment.objects.filter(counsellor=self.request.user)
