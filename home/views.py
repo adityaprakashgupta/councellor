@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from accounts.models import User
 from .models import Slot, Appointment, CounsellorUser, ClientUser
 from .serializers import AppointmentSerializer
+import datetime
 
 
 # Create your views here.
@@ -63,3 +64,10 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         elif hasattr(self.request.user, "counselloruser"):
             return Appointment.objects.filter(counsellor=self.request.user.counselloruser)
 
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_free_slot(request):
+    from_date = request.GET.get("fd")
+    to_date = request.GET.get("td")
+    pass
